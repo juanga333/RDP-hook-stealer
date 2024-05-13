@@ -1,6 +1,6 @@
 
 # RDP-hook-stealer
-This is a tool that I code in my process of understanding windows internals. I thought it was a very good idea to deploy it on jump servers. The result in a production environment was really impressive. Each password entered will be stored in ``C:\users\<user>\AppData\Local\Temp\data.bin``
+This is a tool that I code in my process of understanding windows internals. I thought it was a very good idea to deploy it on jump servers. Each password entered will be stored in ``C:\users\<user>\AppData\Local\Temp\data.bin``
 
 ## Files
 There are two files: rdp_indisk.cpp and rdp_inmemory.cpp. They are quite self-descriptive, but basically one injects the DLL from disk, and another from memory, being in shellcode format in the binary itself

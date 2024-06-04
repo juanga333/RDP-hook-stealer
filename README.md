@@ -11,9 +11,6 @@ To compile the indisk:
 To compile the inmemory
 ``x86_64-w64-mingw32-gcc rdp_inmemory.cpp -o rdp_inmemory.exe -lstdc++ -static``
 
-## Example
-![image](https://github.com/juanga333/RDP-hook-stealer/assets/51821633/24ada562-c215-4ca8-9bc6-6182e86dffa2)
-
 ## Persistence
 1. Create a .lnk in startup folder
 ``C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp`` with the content ``Powershell -ExecutionPolicy Bypass -File “C:\run.ps1”``
